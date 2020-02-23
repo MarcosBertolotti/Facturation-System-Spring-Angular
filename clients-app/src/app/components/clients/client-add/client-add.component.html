@@ -1,0 +1,111 @@
+<div class="container mt-4">
+
+    <ul class="alert alert-danger" *ngIf="errors?.length > 0">
+        <li *ngFor="let err of errors">
+            {{ err }}
+        </li>
+    </ul>
+
+    <div class="card bg-dark text-white">
+        
+        <div class="card-header">{{ title }}</div>
+
+        <div class="card-body">
+            <form [formGroup]="clientForm" (ngSubmit)="onSubmit()">
+
+                <div class="form-group row">
+                    <label for="firstName" class="col-form-label col-sm-2">First Name: </label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" formControlName="firstName" id="firstName" name="firstName">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="lastName" class="col-form-label col-sm-2">Last Name: </label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" formControlName="lastName" id="lastName" name="lastName">
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="Email" class="col-form-label col-sm-2">Email: </label>
+                    <div class="col-sm-6">
+                        <input type="text" class="form-control" formControlName="email" id="email" name="email">
+                    </div>
+                </div>
+                
+                <div class="form-group row">
+                    <label for="createAt" class="col-form-label col-sm-2">Date: </label>
+                    <div class="col-sm-6">
+                        <input [matDatepicker]="myDatepicker" class="form-control d-inline" formControlName="createAt" id="createAt" name="createAt" style="width:300px;">
+                        <mat-datepicker-toggle [for]="myDatepicker"></mat-datepicker-toggle>
+                        <mat-datepicker #myDatepicker></mat-datepicker>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="region" class="col-form-label col-sm-2">Region: </label>
+                    <div class="col-sm-6">
+                        <select [compareWith]="compareRegion" class="form-control" formControlName="region" id="region" name="region" style="width:500px;">
+                            <option [ngValue]="undefined">--- select a region ---</option>
+                            <option *ngFor="let region of regions" [ngValue]="region">{{ region.name }}</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <button type="submit" class="btn btn-success" [disabled]="!clientForm.valid">Add Client</button>
+                    </div>
+                </div>
+
+                <div *ngIf="firstName.invalid && (firstName.dirty || firstName.touched)" class="alert alert-danger">
+                    <div *ngIf="firstName.errors.required">
+                        First Name is required!
+                    </div>
+                    <div *ngIf="firstName.errors.minlength">
+                        First Name must be at least 2 characters long!
+                    </div>
+                    <div *ngIf="firstName.errors.maxlength">
+                        First Name must be at most 20 characters long!
+                    </div>
+                </div>
+
+                <div *ngIf="lastName.invalid && (lastName.dirty || lastName.touched)" class="alert alert-danger">
+                    <div *ngIf="lastName.errors.required">
+                        Last Name is required!
+                    </div>
+                    <div *ngIf="lastName.errors.minlength">
+                        Last Name must be at least 2 characters long!
+                    </div>
+                    <div *ngIf="lastName.errors.maxlength">
+                        Last Name must be at most 20 characters long!
+                    </div>
+                </div>
+
+                <div *ngIf="email.invalid && (email.dirty || email.touched)" class="alert alert-danger">
+                    <div *ngIf="email.errors.required">
+                        Email is required!
+                    </div>
+                    <div *ngIf="email.errors.email">
+                        Email must be email structure!
+                    </div>
+                </div>
+
+                <div *ngIf="createAt.invalid && (createAt.dirty || createAt.touched)" class="alert alert-danger">
+                    <div *ngIf="createAt.errors.required">
+                        Date is required!
+                    </div>
+                </div>
+
+                <div *ngIf="region.invalid && (region.dirty || region.touched)" class="alert alert-danger">
+                    <div *ngIf="region.errors.required">
+                        Region is required!
+                    </div>
+                </div>
+                
+            </form>
+        </div>
+
+    </div>
+</div>

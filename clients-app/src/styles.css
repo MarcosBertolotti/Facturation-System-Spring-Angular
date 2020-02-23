@@ -1,0 +1,14 @@
+html {
+  min-height: 100%;
+  position: relative;
+}
+body{
+  margin-bottom:60px;
+
+  min-height: 100%;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+.wrap{
+  padding-bottom: 60px;
+}

@@ -1,0 +1,24 @@
+.open-modal{
+    background-color: rgba(0, 0, 0, 0.7);
+    position:fixed;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;   /* posicionar al frente de los demas elementos. solo se puede aplicar a las clases a los estilos que tengan el atributo position y los posiciona segun el orden que le demos en el z index de forma descendente */
+}
+
+.animation{
+    animation-duration: 0.3s;         /* para firefox */
+    animation-fill-mode: both;
+    -webkit-animation-duration: 0.3s;         /* chrome y zafari */
+    -webkit-animation-fill-mode: both;
+}
+
+.fadeIn{    /* definimos la animacion */
+    animation-name: fadeIn;
+    -webkit-animation-name: fadeIn;
+}
+
+@keyframes fadeIn {0% {opacity: 0}to{opacity: 1}}     /* describe cual es el efecto de la animacion a traves de reglas, contiene un conjunto de reglas (fotograma clave) que contiene el codigo y define los estilos que se aplicaran para ese momento dentro de la animacion */
+@-webkit-keyframes fadeIn {0% {opacity: 0}to{opacity: 1}} /* la opacidad comienza en 0 y finaliza en 1 */
