@@ -1,2 +1,2 @@
 # Facturation-System-Spring-Angular
-IN PROCESS...
+Facturation System with Spring Boot + JWT, Spring Security + Angular 8
