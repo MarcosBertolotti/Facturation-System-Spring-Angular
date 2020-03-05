@@ -63,6 +63,8 @@ export class ClientUpdateComponent implements OnInit {
 
   onSubmit()
   {
+    this.client.bills = null; // cuando editamos un cliente, no debemos actualizar sus facturas
+
     this.client.firstName = this.firstName.value;
     this.client.lastName = this.lastName.value;
     this.client.email = this.email.value;

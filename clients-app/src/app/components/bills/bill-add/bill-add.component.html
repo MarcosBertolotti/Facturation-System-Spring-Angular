@@ -1,0 +1,98 @@
+<div class="container mt-4 wrap">
+
+    <div class="card bg-light">
+        <div class="card-header">{{ title }}: {{ bill.description }}</div>
+        <div class="card-body">
+            <h4 class="card-title">
+                <a [routerLink]="['/clients']" class="btn btn-light btn-xs">&laquo; go back</a>
+            </h4>
+
+            <form [formGroup]="billForm" (ngSubmit)="create()">
+                
+                <div class="form-group row" *ngIf="bill.client">
+                    <label for="client" class="col-sm-2 col-form-label">Client</label>
+                    <div class="col-sm-6">
+                        <input type="text" value="{{ bill.client.firstName }} {{ bill.client.lastName }}" name="client" id="client" class="form-control" disabled>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="description" class="col-sm-2 col-form-label">Description</label>
+                    <div class="col-sm-6">
+                        <input type="text" formControlName="description" name="description" id="description" class="form-control" required>
+                        
+                        <div *ngIf="description.invalid && (description.dirty || description.touched) || description.invalid && this.formSubmitAttempt" class="alert alert-danger">
+                            <div *ngIf="description.errors.required">
+                                Description is required!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="observation" class="col-sm-2 col-form-label">Observation</label>
+                    <div class="col-sm-6">
+                        <textarea formControlName="observation" name="observation" id="observation" class="form-control"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <mat-form-field>
+                            <input type="text"
+                                placeholder="Add Product"
+                                aria-label="Products"            
+                                matInput
+                                [formControl]="autocompleteControl"
+                                [matAutocomplete]="auto">
+                            <mat-autocomplete #auto="matAutocomplete" [displayWith]="showName" (optionSelected)="selectProduct($event)">       <!-- indicamos metodo a implementar este nombre. Y Indicamos un evento para manejar el producto seleccionado -->
+                            <mat-option *ngFor="let product of filteredProducts | async" [value]="product"> <!-- async, estamos iterando un observable -->
+                                {{ product.name }}
+                            </mat-option>
+                            </mat-autocomplete>
+                        </mat-form-field>
+                        <div *ngIf="autocompleteControl.invalid && this.formSubmitAttempt" class="alert alert-danger">
+                            Bill can't not have lines!
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="alert alert-info my-4" *ngIf="bill.items.length == 0">
+                    There aren't lines assigned to the bill. You must add at least one!
+                </div>
+
+                <table class="table table-striped table-hover trable-sm" *ngIf="bill.items.length > 0">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let item of bill.items">
+                            <td> {{ item.product.name }}</td>
+                            <td> {{ item.product.price }}</td>
+                            <td><input type="number" value="{{ item.quantity }}" class="form-control col-sm-4" (change)="updateQuantity(item.product.id, $event)"></td>
+                            <td> {{ item.calculateAmount() }}</td>
+                            <td><button class="btn btn-danger btn-sm" type="button" (click)="deleteItemBill(item.product.id)">x</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <h5 class="float-right" *ngIf="bill.items.length > 0">Grand Total: 
+                    <span class="badge badge-secondary">{{ bill.calculateGrandTotal() }}</span>
+                </h5>
+
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <input type="submit" value="Create Bill" class="btn btn-secondary">
+                    </div>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

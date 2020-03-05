@@ -5,6 +5,8 @@ import Swal from 'sweetalert2';
 import { HttpEventType } from '@angular/common/http';
 import { ModalService } from 'src/app/services/modal.service';
 import { AuthService } from '../../users/auth.service';
+import { BillService } from 'src/app/services/bill.service';
+import { Bill } from 'src/app/models/bill';
 
 @Component({
   selector: 'app-client-view',
@@ -19,7 +21,7 @@ title: string = "Client Details";
 private photoSelected: File;
 progress: number = 0;
 
-  constructor(private clientService: ClientService, private modalService: ModalService, private authService: AuthService) { }
+  constructor(private clientService: ClientService, private modalService: ModalService, private authService: AuthService, private billService: BillService) { }
 
   ngOnInit() {
   }
@@ -79,6 +81,26 @@ progress: number = 0;
     this.modalService.closeModal();
     this.photoSelected = null;
     this.progress = 0;
+  }
+
+  deleteBill(bill: Bill): void
+  {
+    this.billService.delete(bill.id)
+    .subscribe(
+      response => {
+        this.deleteBillOfList(bill);
+        Swal.fire({
+          title: 'Bill ' + response.description + ' removed successfully!',
+          icon: 'success'
+        });
+      },
+      err => console.log(err)
+    )
+  }
+
+  deleteBillOfList(bill: Bill): void
+  {
+    this.client.bills = this.client.bills.filter(b => b != bill);
   }
 
 }

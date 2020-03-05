@@ -1,9 +1,9 @@
 package com.springboot.apirest.controllers;
 
+import com.springboot.apirest.dto.Message;
 import com.springboot.apirest.entity.Client;
 import com.springboot.apirest.entity.ErrorResponse;
 import com.springboot.apirest.entity.Region;
-import com.springboot.apirest.exceptions.ClientNotFoundException;
 import com.springboot.apirest.services.IClientService;
 import com.springboot.apirest.services.IUploadFileService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +36,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpStatus.CONFLICT;
+import static org.springframework.http.ResponseEntity.noContent;
+import static org.springframework.http.ResponseEntity.status;
+
 @CrossOrigin(origins = {"http://localhost:4200"}) // origins  = indicamos dominio,
 @RestController
 @RequestMapping("api/clients")
@@ -56,10 +60,10 @@ public class ClientRestController {
             if(clients != null && clients.size() > 0)
                 return ResponseEntity.ok(clients);
             else
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                return status(HttpStatus.NOT_FOUND).build();
 
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -72,10 +76,10 @@ public class ClientRestController {
             if(clients != null && clients.getTotalElements() > 0)
                 return ResponseEntity.ok(clients);
             else
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+                return status(HttpStatus.NOT_FOUND).build();
 
         }catch (Exception e){
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -89,14 +93,20 @@ public class ClientRestController {
             Client client = clientService.findById(id);
 
             return ResponseEntity.ok(client);
-
-        }catch (ClientNotFoundException e){
-            return ResponseEntity.status(e.getStatusCode()).body(ErrorResponse.builder().message(e.getMessage()).code(e.getRawStatusCode()).build());
         }catch (DataAccessException e){
             response.put("message", "Error consulting clients!");
             response.put("error", e.getMessage() + ": " + e.getMostSpecificCause().getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
+    }
+
+    @Secured("ROLE_ADMIN")
+    @GetMapping("/indentities")
+    public ResponseEntity<?> getUserByEmail(@RequestParam final String email) {
+
+        return clientService.existsByEmail(email) ?
+                status(CONFLICT).body(Message.builder().message("email already exists").build()) :
+                noContent().build();
     }
 
     @Secured("ROLE_ADMIN")
@@ -108,7 +118,7 @@ public class ClientRestController {
         if(result.hasErrors()) {
             response.put("errors", this.bindingResultValidate(result));
             System.out.println(response);
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            return status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         try{
@@ -117,12 +127,12 @@ public class ClientRestController {
             response.put("message", "Client created successfully!");
             response.put("client", newClient);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+            return status(HttpStatus.CREATED).body(response);
 
         }catch (DataAccessException e){
             response.put("message", "Error inserting a client!");
             response.put("error", e.getMessage() + ": " + e.getMostSpecificCause().getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
@@ -134,7 +144,7 @@ public class ClientRestController {
 
         if(result.hasErrors()) {
             response.put("errors", this.bindingResultValidate(result));
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+            return status(HttpStatus.BAD_REQUEST).body(response);
         }
 
         try {
@@ -143,14 +153,11 @@ public class ClientRestController {
             response.put("message", "Client updated successfully!");
             response.put("client", c);
 
-            return ResponseEntity.status(HttpStatus.CREATED).body(response);
-
-        }catch (ClientNotFoundException e){
-            return ResponseEntity.status(e.getStatusCode()).body(ErrorResponse.builder().message(e.getMessage()).code(e.getRawStatusCode()).build());
+            return status(HttpStatus.CREATED).body(response);
         }catch(DataAccessException e){
             response.put("message", "Error updating a client!");
             response.put("error", e.getMessage() + ": " + e.getMostSpecificCause().getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
@@ -169,14 +176,11 @@ public class ClientRestController {
 
             response.put("message", "Client removed successfully!");
             response.put("client", client);
-            return ResponseEntity.status(HttpStatus.OK).body(response);
-
-        }catch (ClientNotFoundException e){
-            return ResponseEntity.status(e.getStatusCode()).body(ErrorResponse.builder().message(e.getMessage()).code(e.getRawStatusCode()).build());
+            return status(HttpStatus.OK).body(response);
         }catch (DataAccessException e){
             response.put("message", "Error removing a client!");
             response.put("error", e.getMessage() + ": " + e.getMostSpecificCause().getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+            return status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
         }
     }
 
@@ -196,7 +200,7 @@ public class ClientRestController {
             } catch (IOException e) {
                 response.put("message", "Error uploading client image");
                 response.put("error", e.getCause().getMessage());
-                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+                return status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }
 
             String previousFileName = client.getPhoto();
@@ -208,7 +212,7 @@ public class ClientRestController {
             response.put("client", client);
             response.put("message", "You have successfully uploaded image: " + fileName);
         }
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        return status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/uploads/img/{fileName:.+}")               // expresion regular que indica que este parametro va a recibir un punto y la extension
@@ -225,7 +229,7 @@ public class ClientRestController {
         HttpHeaders header = new HttpHeaders();                        // pasamos las cabeceras de la respuesta para que esta imagen lo forcemos para que se pueda descargar
         header.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");     // attachment: va a forzar que se descarge la imagen, de esta forma lo podemos incluir en el elemento html de imagen img en el atributo src y asi lo va a mostrar correctamente en el navegador
 
-        return ResponseEntity.status(HttpStatus.OK).headers(header).body(resource);
+        return status(HttpStatus.OK).headers(header).body(resource);
     }
 
     //@Secured("ROLE_ADMIN")

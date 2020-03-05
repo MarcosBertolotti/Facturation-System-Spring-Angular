@@ -70,6 +70,22 @@ export class ClientService {
   }
 
 
+  getUserByEmail(email: string): Observable<any>
+  {
+    return this.http.get(this.url + '/indentities?email=' + email)
+    .pipe(
+      catchError(e => {
+        if(e.status != 401 && e.status != 409 && e.error.message){
+          this.router.navigate['/list'];
+          console.error(e.error.message);
+        }
+        return throwError(e);
+      })
+    );
+  }
+
+
+
   add(client: Client): Observable<any>
   {
     return this.http.post(this.url, client)

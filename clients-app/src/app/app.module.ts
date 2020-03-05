@@ -23,7 +23,14 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './components/users/login.component';
 import { TokenInterceptor } from './components/users/interceptors/token.interceptor';
 import { AuthInterceptor } from './components/users/interceptors/auth.interceptor';
+import { BillViewComponent } from './components/bills/bill-view/bill-view.component';
+import { BillAddComponent } from './components/bills/bill-add/bill-add.component';
 
+// para el auto complete field
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
+import {MatInputModule} from '@angular/material/input';
+import {MatFormFieldModule} from '@angular/material/form-field';
+// fin
 
 registerLocaleData(localeAR, 'es-AR')
 
@@ -37,7 +44,9 @@ registerLocaleData(localeAR, 'es-AR')
     ClientUpdateComponent,
     ClientViewComponent,
     ClientPaginatorComponent,
-    LoginComponent
+    LoginComponent,
+    BillViewComponent,
+    BillAddComponent
   ],
   imports: [
     BrowserModule,
@@ -47,7 +56,10 @@ registerLocaleData(localeAR, 'es-AR')
     ReactiveFormsModule,
     BrowserAnimationsModule,
     MatDatepickerModule, 
-    MatMomentDateModule
+    MatMomentDateModule,
+    MatAutocompleteModule,
+    MatInputModule,
+    MatFormFieldModule
   ],
   providers: [
     ClientService,

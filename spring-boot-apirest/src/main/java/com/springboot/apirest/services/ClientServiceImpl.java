@@ -4,6 +4,7 @@ import com.springboot.apirest.entity.Client;
 import com.springboot.apirest.entity.ErrorResponse;
 import com.springboot.apirest.entity.Region;
 import com.springboot.apirest.exceptions.ClientNotFoundException;
+import com.springboot.apirest.exceptions.ObjectAlreadyExistsException;
 import com.springboot.apirest.repository.IClientRepository;
 import com.springboot.apirest.repository.IRegionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +15,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+
+import static java.lang.Boolean.FALSE;
+import static java.util.Optional.ofNullable;
 
 @Service
 public class ClientServiceImpl implements IClientService {
@@ -45,11 +49,15 @@ public class ClientServiceImpl implements IClientService {
     public Client findById(final Integer id) throws ClientNotFoundException{
 
         return clientRepository.findById(id)
-                .orElseThrow(() -> new ClientNotFoundException(HttpStatus.BAD_REQUEST, String.format(CLIENT_NOT_FOUND,id)));
+                .orElseThrow(ClientNotFoundException::new);
     }
 
     @Override
     public Client save(final Client client) {
+
+        ofNullable(clientRepository.existsByEmail(client.getEmail()))
+                .filter(FALSE::equals)
+                .orElseThrow(() -> new ObjectAlreadyExistsException(Client.class.getSimpleName(), "email", client.getEmail()));
 
         return clientRepository.save(client);
     }
@@ -73,7 +81,6 @@ public class ClientServiceImpl implements IClientService {
     public Client deleteById(Integer id) throws ClientNotFoundException {
 
         Client client = this.findById(id);
-
         clientRepository.deleteById(id);
 
         return client;
@@ -84,5 +91,14 @@ public class ClientServiceImpl implements IClientService {
     public List<Region> findAllRegions() {
 
         return regionRepository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Boolean existsByEmail(String email){
+
+        return ofNullable(email)
+                .map(clientRepository::existsByEmail)
+                .orElse(false);
     }
 }

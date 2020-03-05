@@ -22,7 +22,6 @@ export class TokenInterceptor implements HttpInterceptor {  // manejamos el requ
         const authReq = req.clone({
           headers: req.headers.set('Authorization', 'Bearer ' + token)
         });
-        console.log('TokenInterceptor => Bearer ' + token);
 
         return next.handle(authReq);  // va al proximo interceptor de nuestra stack de interceptors hasta llegar al ultimo 
       }

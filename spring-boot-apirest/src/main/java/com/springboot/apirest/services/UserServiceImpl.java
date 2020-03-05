@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-public class UserService implements IUserService, UserDetailsService {    // interfaz de spring security
+public class UserServiceImpl implements IUserService, UserDetailsService {    // interfaz de spring security
 
-    private Logger logger = LoggerFactory.getLogger(UserService.class);
+    private Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     private IUserRepository userRepository;

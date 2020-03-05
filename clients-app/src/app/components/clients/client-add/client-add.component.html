@@ -90,6 +90,9 @@
                     <div *ngIf="email.errors.email">
                         Email must be email structure!
                     </div>
+                    <div *ngIf="email.errors.emailExists">
+                        Email already exists!
+                    </div>
                 </div>
 
                 <div *ngIf="createAt.invalid && (createAt.dirty || createAt.touched)" class="alert alert-danger">

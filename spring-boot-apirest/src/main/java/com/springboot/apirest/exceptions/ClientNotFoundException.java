@@ -1,12 +1,11 @@
 package com.springboot.apirest.exceptions;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.client.HttpClientErrorException;
 
-public class ClientNotFoundException extends HttpClientErrorException {
+public class ClientNotFoundException extends RuntimeException {
 
 
-    public ClientNotFoundException(HttpStatus statusCode, String statusText) {
-        super(statusCode, statusText);
+    public ClientNotFoundException() {
+        super("Client not found in the System!");
     }
 }

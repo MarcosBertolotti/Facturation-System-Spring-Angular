@@ -8,6 +8,8 @@ import { ClientViewComponent } from './components/clients/client-view/client-vie
 import { LoginComponent } from './components/users/login.component';
 import { AuthGuard } from './components/users/guards/auth.guard';
 import { RoleGuard } from './components/users/guards/role.guard';
+import { BillViewComponent } from './components/bills/bill-view/bill-view.component';
+import { BillAddComponent } from './components/bills/bill-add/bill-add.component';
 
 const routes: Routes = [
     { path: 'clients', component: ClientListComponent },
@@ -16,6 +18,8 @@ const routes: Routes = [
     { path: 'clients/update/:id', component: ClientUpdateComponent, canActivate:[AuthGuard, RoleGuard], data: {role: 'ROLE_ADMIN'} },
     { path: 'clients/view/:id', component: ClientViewComponent },
     { path: 'login', component: LoginComponent }, 
+    { path: 'bills/view/:id', component: BillViewComponent, canActivate:[AuthGuard, RoleGuard], data: {role: 'ROLE_USER'}},
+    { path: 'bills/add/:clientId', component: BillAddComponent, canActivate:[AuthGuard, RoleGuard], data: {role: 'ROLE_ADMIN'} },
     { path: '', redirectTo: '/clients', pathMatch: 'full' }
 ]
 

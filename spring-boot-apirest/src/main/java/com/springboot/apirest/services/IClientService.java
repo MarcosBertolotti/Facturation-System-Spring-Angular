@@ -22,4 +22,6 @@ public interface IClientService {
     Client deleteById(Integer id);
 
     List<Region> findAllRegions();
+
+    Boolean existsByEmail(String email);
 }

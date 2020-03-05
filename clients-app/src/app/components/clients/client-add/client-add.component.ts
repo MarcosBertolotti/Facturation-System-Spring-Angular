@@ -5,6 +5,7 @@ import { Client } from 'src/app/models/client';
 import { Region } from 'src/app/models/region';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import Swal from 'sweetalert2';
+import { CustomValidator } from 'src/app/models/custom-validator';
 
 @Component({
   selector: 'app-client-add',
@@ -42,7 +43,7 @@ export class ClientAddComponent implements OnInit {
 
       'email': new FormControl(null,
         [Validators.required, Validators.email],
-        []),
+        [CustomValidator.emailExistsValidator(this.clientService)]),
       'createAt': new FormControl(null,
       [Validators.required]),
       'region': new FormControl(undefined,

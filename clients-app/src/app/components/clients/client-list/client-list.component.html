@@ -23,13 +23,14 @@
                         <th>Last Name</th>
                         <th>Email</th>
                         <th>Date</th>
+                        <th *ngIf="authService.hasRole('ROLE_ADMIN')">Create Bill</th>
                         <th *ngIf="authService.hasRole('ROLE_ADMIN')">Update</th>
                         <th *ngIf="authService.hasRole('ROLE_ADMIN')">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr *ngFor="let client of clients">
-                        <td *ngIf="authService.hasRole('ROLE_USER')">
+                        <td *ngIf="authService.hasRole('ROLE_USER')">  
                             <img (click)="openModal(client)" *ngIf="client?.photo" 
                             src="http://localhost:8080/api/clients/uploads/img/{{client.photo}}" alt="{{client.photo}}" class="img-thumbnail rounded"
                             style="width:64px; cursor: pointer;">
@@ -42,6 +43,7 @@
                         <td>{{ client.lastName | uppercase }}</td>
                         <td>{{ client.email }}</td>
                         <td>{{ client.createAt | date:"EEEE dd-MM-yyyy" }}</td>
+                        <td *ngIf="authService.hasRole('ROLE_ADMIN')"><button type="button" class="btn btn-success btn-sm" [routerLink]="['/bills/add', client.id]">Create Bill</button></td>
                         <td *ngIf="authService.hasRole('ROLE_ADMIN')"><a class="btn btn-primary btn-sm" [routerLink]="['/clients/update/', client.id]">Update</a></td>
                         <td *ngIf="authService.hasRole('ROLE_ADMIN')"><a class="btn btn-danger btn-sm" (click)="deleteById(client.id)">Delete</a></td>
                     </tr>

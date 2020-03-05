@@ -82,7 +82,7 @@ export class AuthService {
     }
     return false;
   }
-
+  
   logout(): void
   {
     this._token = null;

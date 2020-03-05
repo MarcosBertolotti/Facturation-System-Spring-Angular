@@ -1,0 +1,58 @@
+<div class="container mt-4 mb-2 wrap">
+
+    <div class="card bg-light" *ngIf="bill">
+        <div class="card-header">{{ title }}: {{ bill.description }}</div>
+        <div class="card-body">
+            <h4 class="card-title">
+                <a [routerLink]="['/clients']" class="btn btn-light btn-xs">&laquo; go back</a>
+            </h4>
+
+            <ul class="list-group my-2">
+                <li class="list-group-item list-group-item-primary">Client Detail</li>
+                <li class="list-group-item">{{ bill.client.firstName }}</li>
+                <li class="list-group-item">{{ bill.client.lastName }}</li>
+            </ul>
+
+            <ul class="list-group my-2">
+                <li class="list-group-item list-group-item-primary">Bill Detail</li>
+                <li class="list-group-item">Folio: {{ bill.id }}</li>
+                <li class="list-group-item">Description: {{ bill.description }}</li>
+                <li class="list-group-item">Date: {{ bill.createAt }}</li>
+            </ul>
+
+            <table class="table table-striped table-hover table-bordered my-3">
+                <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let item of bill.items">
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.product.price }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>{{ item.amount }}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h5 class="float-right">
+                <span>Grand Total</span>: 
+                <span class="badge badge-secondary">{{ bill.total }}</span>
+            </h5>
+
+            <div class="card border-info mb-4" style="max-width: 300px;">
+                <div class="card card-header">
+                    Observations
+                </div>
+                <div class="card card-body">
+                    <p *ngIf="!bill.observation">hasn't observation</p>
+                    <p *ngIf="bill.observation">{{ bill.observation }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
